@@ -21,7 +21,7 @@ class OrderPageLocators:
     COLOR_GREY_CHECKBOX = (By.ID, "grey")
     COMMENT_INPUT = (By.XPATH, "//input[@placeholder='Комментарий для курьера']")
     
-    # Кнопка Заказать во второй части формы - ИСПРАВЛЕННАЯ
+    # Кнопка Заказать во второй части формы
     ORDER_BUTTON = (By.XPATH, "//div[@class='Order_Buttons__1xGrp']//button[text()='Заказать']")
     
     # Локаторы для подтверждения заказа

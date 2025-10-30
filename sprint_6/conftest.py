@@ -14,22 +14,14 @@ def driver():
     firefox_options.set_preference("dom.webdriver.enabled", False)
     firefox_options.set_preference("useAutomationExtension", False)
     
-    # Используем системный Firefox если webdriver-manager не работает
     try:
         from webdriver_manager.firefox import GeckoDriverManager
         service = Service(GeckoDriverManager().install())
         driver = webdriver.Firefox(service=service, options=firefox_options)
     except:
-        # Альтернативный способ - используем системный драйвер
         driver = webdriver.Firefox(options=firefox_options)
     
     driver.implicitly_wait(10)
     
     yield driver
     driver.quit()
-
-
-@pytest.fixture
-def main_page(driver):
-    from pages.main_page import MainPage
-    return MainPage(driver)
