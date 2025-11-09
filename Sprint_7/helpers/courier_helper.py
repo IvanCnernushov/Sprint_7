@@ -1,19 +1,19 @@
 import requests
 import random
 import string
+import allure
+from data.urls import Urls
 
 class CourierHelper:
     
-    BASE_URL = "https://qa-scooter.praktikum-services.ru"
-    
+    @allure.step("Генерация случайной строки длиной {length}")
     def generate_random_string(self, length):
         letters = string.ascii_lowercase
         random_string = ''.join(random.choice(letters) for i in range(length))
         return random_string
 
-    def register_new_courier_and_return_login_password(self):
-        login_pass = []
-        
+    @allure.step("Регистрация нового курьера")
+    def register_new_courier(self):
         login = self.generate_random_string(10)
         password = self.generate_random_string(10)
         first_name = self.generate_random_string(10)
@@ -24,20 +24,19 @@ class CourierHelper:
             "firstName": first_name
         }
 
-        response = requests.post(f'{self.BASE_URL}/api/v1/courier', data=payload)
-
-        if response.status_code == 201:
-            login_pass.append(login)
-            login_pass.append(password)
-            login_pass.append(first_name)
-
-        return login_pass
+        response = requests.post(Urls.BASE_URL + Urls.CREATE_COURIER, data=payload)
+        return response, login, password, first_name
     
+    @allure.step("Удаление курьера с ID {courier_id}")
     def delete_courier(self, courier_id):
-        response = requests.delete(f'{self.BASE_URL}/api/v1/courier/{courier_id}')
+        response = requests.delete(Urls.BASE_URL + Urls.DELETE_COURIER.format(id=courier_id))
         return response
     
-    def login_courier(self, payload):
-        response = requests.post(f'{self.BASE_URL}/api/v1/courier/login', data=payload)
+    @allure.step("Логин курьера")
+    def login_courier(self, login, password):
+        payload = {
+            "login": login,
+            "password": password
+        }
+        response = requests.post(Urls.BASE_URL + Urls.LOGIN_COURIER, data=payload)
         return response
-  

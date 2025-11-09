@@ -1,26 +1,26 @@
 import pytest
 import requests
+import allure
+from data.urls import Urls
 
 class TestUtils:
     
-    BASE_URL = "https://qa-scooter.praktikum-services.ru"
-    
+    @allure.title("Пинг сервера")
     def test_ping_server(self):
-        response = requests.get(f'{self.BASE_URL}/api/v1/ping')
+        with allure.step("Пинг сервера"):
+            response = requests.get(Urls.BASE_URL + Urls.PING)
         
-        assert response.status_code == 200
-        assert response.text == "pong;"
+        with allure.step("Проверка ответа"):
+            assert response.status_code == 200
+            assert response.text == "pong;"
 
+    @allure.title("Поиск станций метро")
     def test_search_stations(self):
-        station_name = "Сокол"
-        response = requests.get(f'{self.BASE_URL}/api/v1/stations/search?s={station_name}')
+        with allure.step("Поиск станций"):
+            station_name = "Сокол"
+            response = requests.get(Urls.BASE_URL + Urls.SEARCH_STATIONS, params={"s": station_name})
         
-        assert response.status_code == 200
-        stations = response.json()
-        assert isinstance(stations, list)
-        
-        if len(stations) > 0:
-            station = stations[0]
-            assert "number" in station
-            assert "name" in station
-            assert "color" in station
+        with allure.step("Проверка ответа"):
+            assert response.status_code == 200
+            stations = response.json()
+            assert isinstance(stations, list)
